@@ -188,7 +188,7 @@ def get_args():
     parser.add_argument("--max_concat_length", type=int, default=512, help="Max concatenation length of the session")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--n_gpu", type=int, default=1)
-    parser.add_argument("--alpha", type=int, default=0.5)
+    parser.add_argument("--alpha", type=float, default=0.5)
     parser.add_argument("--disable_tqdm", type=bool, default=True)
 
     parser.add_argument("--print_steps", type=float, default=0.5)
