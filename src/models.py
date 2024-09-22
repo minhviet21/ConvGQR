@@ -64,7 +64,7 @@ class ANCE(RobertaForSequenceClassification):
     def forward(self, input_ids, attention_mask, wrap_pooler=False):
         return self.query_emb(input_ids, attention_mask)
       
- def load_model(model_type, model_path):
+def load_model(model_type, model_path):
     if model_type == "ANCE_Query" or model_type == "ANCE_Passage":
         config = RobertaConfig.from_pretrained(
             model_path,
