@@ -17,7 +17,7 @@ from tqdm import tqdm, trange
 import random
 from itertools import combinations
 from torch.nn.utils.rnn import pad_sequence
-import numpy as np
+import numpy as np+
 from models import load_model
 
 class ConvExample_rewrite:
@@ -439,7 +439,7 @@ class T5RewriterDataset_qrecc(Dataset):
 
     @staticmethod
     def get_collate_fn(args):
-        
+    
         def collate_fn(batch: list):
             collated_dict = {"bt_sample_ids": [],
                              "bt_input_ids": [],
@@ -535,7 +535,7 @@ class T5RewriterIRDataset_topiocqa(Dataset):
                     break
                 else:
                     flat_concat.extend(utt) 
-
+                    
             flat_concat, flat_concat_mask = padding_seq_to_same_length(flat_concat, max_pad_length = args.max_concat_length)
 
             if args.collate_fn_type == "flat_concat_for_train":

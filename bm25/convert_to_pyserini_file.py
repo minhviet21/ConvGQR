@@ -5,8 +5,8 @@ from argparse import ArgumentParser
 
 from tqdm import tqdm
 
-WIKI_FILE = "../../../data/full_wiki_segments.tsv"
-OUTPUT_FILE = "../../../data/bm25_collection/full_wiki_segments_pyserini_format.jsonl"
+WIKI_FILE = "..\\datasets\\topiocqa\\full_wiki_segments.tsv"
+OUTPUT_FILE = "..\\datasets\\topiocqa\\bm25_collection\\full_wiki_segments_pyserini_format.jsonl"
 
 id_col= 0
 text_col= 1
@@ -14,9 +14,9 @@ title_col = 2
 
 def main(wiki_file, output_file):
 
-    with open(wiki_file, 'r') as input:
+    with open(wiki_file, 'r', encoding = "utf8") as input:
         reader = csv.reader(input, delimiter="\t")
-        with open(output_file, 'w') as output:
+        with open(output_file, 'w', encoding = "utf8") as output:
             for i, row in enumerate(tqdm(reader)):
                 if row[id_col] == "id":
                     continue
@@ -37,4 +37,3 @@ if __name__ == "__main__":
         os.makedirs(os.path.dirname(args.output_file), exist_ok=True)
 
     main(args.wiki_file, args.output_file)
-

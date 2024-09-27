@@ -70,7 +70,7 @@ def train(args, log_writer):
         query_encoder = torch.nn.DataParallel(query_encoder, device_ids = list(range(args.n_gpu)))
 
     args.batch_size = args.per_gpu_train_batch_size * max(1, args.n_gpu)
-    
+
     # data prepare
     train_dataset = T5RewriterIRDataset_topiocqa(args, query_tokenizer, args.train_file_path)
     train_loader = DataLoader(train_dataset, 
