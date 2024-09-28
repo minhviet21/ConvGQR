@@ -10,7 +10,7 @@ import argparse
 import json
 torch.multiprocessing.set_sharing_strategy('file_system')
 from multiprocessing import Process
-from models import load_model
+from src.models import load_model
 import toml
 from IPython import embed
 from utils import check_dir_exist_or_build

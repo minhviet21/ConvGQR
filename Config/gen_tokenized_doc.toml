@@ -3,7 +3,7 @@ title = "tokenizing the collection (all passaages) for later embedding generatio
 
 # [Model]
 model_type = "ANCE"
-pretrained_passage_encoder = "checkpoints/ad-hoc-ance-msmarco"   # passage encoder!!!
+pretrained_passage_encoder = "castorini/ance-msmarco-passage"   # passage encoder!!!
 max_seq_length = 384    # The maximum total input sequence length after tokenization. Sequences longer than this will be truncated, sequences shorter will be padded."
 max_doc_character = 10000   # used before tokenizer to save tokenizer latency
 

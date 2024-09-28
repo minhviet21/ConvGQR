@@ -7,7 +7,7 @@
 
 # [Model]
 model_type = "ANCE"
-pretrained_passage_encoder = "checkpoints/ad-hoc-ance-msmarco"   # passage encoder!!!
+pretrained_passage_encoder = "castorini/ance-msmarco-passage"   # passage encoder!!!
 max_seq_length = 384
 
 # [Gen]

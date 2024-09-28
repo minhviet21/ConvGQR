@@ -17,8 +17,8 @@ from tqdm import tqdm, trange
 import random
 from itertools import combinations
 from torch.nn.utils.rnn import pad_sequence
-import numpy as np+
-from models import load_model
+import numpy as np
+from src.models import load_model
 
 class ConvExample_rewrite:
     def __init__(self, sample_id, 
