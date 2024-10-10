@@ -146,6 +146,13 @@ def train(args, log_writer):
                                 decode_loss.item(),
                                 loss.item()))
 
+                print("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
+                                epoch + 1,
+                                global_step,
+                                ranking_loss.item(),
+                                decode_loss.item(),
+                                loss.item()))
+
             #log_writer.add_scalar("train_ranking_loss, decode_loss, total_loss", ranking_loss, decode_loss, loss, global_step)
             
 
