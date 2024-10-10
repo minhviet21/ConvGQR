@@ -31,7 +31,7 @@ from tensorboardX import SummaryWriter
 
 from models import load_model
 from utils import check_dir_exist_or_build, pstore, pload, set_seed, get_optimizer, print_res
-from data_structure import T5RewriterIRDataset_qrecc, T5RewriterIRDataset_topiocqa
+from data_structure import T5RewriterIRDataset_topiocqa
 #os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 def save_model(args, model, query_tokenizer, save_model_order, epoch, step, loss):
