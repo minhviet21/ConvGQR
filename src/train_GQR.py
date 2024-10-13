@@ -43,16 +43,6 @@ def save_model(args, model, query_tokenizer, save_model_order, epoch, step, loss
     query_tokenizer.save_pretrained(output_dir)
     logger.info("Step {}, Save checkpoint at {}".format(step, output_dir))
 
-def cal_ranking_loss(query_embs, pos_doc_embs, neg_doc_embs):
-    batch_size = len(query_embs)
-    pos_scores = query_embs.mm(pos_doc_embs.T)  # B * B
-    neg_scores = torch.sum(query_embs * neg_doc_embs, dim = 1).unsqueeze(1) # B * 1 hard negatives
-    score_mat = torch.cat([pos_scores, neg_scores], dim = 1)    # B * (B + 1)  in_batch negatives + 1 BM25 hard negative 
-    label_mat = torch.arange(batch_size).to(args.device) # B
-    loss_func = nn.CrossEntropyLoss()
-    loss = loss_func(score_mat, label_mat)
-    return loss
-
 def cal_kd_loss(query_embs, kd_embs):
     loss_func = nn.MSELoss()
     return loss_func(query_embs, kd_embs)
@@ -115,8 +105,6 @@ def train(args, log_writer):
             bt_conv_query_mask = batch['bt_attention_mask'].to(args.device)
             bt_pos_docs = batch['bt_pos_docs'].to(args.device) # B * len one pos
             bt_pos_docs_mask = batch['bt_pos_docs_mask'].to(args.device)
-            bt_neg_docs = batch['bt_neg_docs'].to(args.device) # B * len batch size negs
-            bt_neg_docs_mask = batch['bt_neg_docs_mask'].to(args.device)
             bt_oracle_query = batch['bt_labels'].to(args.device)
             
             output = query_encoder(input_ids=bt_conv_query, 
@@ -128,9 +116,7 @@ def train(args, log_writer):
             with torch.no_grad():
                 # freeze passage encoder's parameters
                 pos_doc_embs = passage_encoder(bt_pos_docs, bt_pos_docs_mask).detach()  # B * dim
-                #neg_doc_embs = passage_encoder(bt_neg_docs, bt_neg_docs_mask).detach()  # B * dim, hard negative
 
-            #ranking_loss = cal_ranking_loss(conv_query_embs, pos_doc_embs, neg_doc_embs)
             ranking_loss = cal_kd_loss(conv_query_embs, pos_doc_embs)
             loss = decode_loss + args.alpha * ranking_loss
             loss.backward()

@@ -164,7 +164,6 @@ class T5RewriterIRDataset_topiocqa(Dataset):
 
             #if "pos_docs" in record and len(record["pos_docs"]) != 0:
             #    pos_docs_text = record["pos_docs"]
-            #    neg_docs_text = record["neg_docs"]
             #else:
             #    continue
             
@@ -205,11 +204,8 @@ class T5RewriterIRDataset_topiocqa(Dataset):
                 labels = labels.tolist()
                 
                 pos_docs = []
-                neg_docs = []
                 pos_docs.extend(tokenizer.encode(record["pos_docs"], add_special_tokens=True, max_length = args.max_doc_length))
-                neg_docs.extend(tokenizer.encode(record["neg_docs"], add_special_tokens=True, max_length = args.max_doc_length))
                 pos_docs, pos_docs_mask = padding_seq_to_same_length(pos_docs, max_pad_length = args.max_doc_length)
-                neg_docs, neg_docs_mask = padding_seq_to_same_length(neg_docs, max_pad_length = args.max_doc_length)
             
                 self.examples.append([record['id'], 
                                 flat_concat,
@@ -218,14 +214,11 @@ class T5RewriterIRDataset_topiocqa(Dataset):
                                 cur_utt_text,
                                 oracle_utt_text,
                                 pos_docs,
-                                pos_docs_mask,
-                                neg_docs,
-                                neg_docs_mask])
+                                pos_docs_mask])
                 i += 1
             else:
                 labels = []
                 pos_docs = []
-                neg_docs = []
                 self.examples.append([record['id'], 
                                         flat_concat,
                                         flat_concat_mask,
@@ -233,9 +226,7 @@ class T5RewriterIRDataset_topiocqa(Dataset):
                                         cur_utt_text,
                                         oracle_utt_text,
                                         pos_docs,
-                                        pos_docs_mask,
-                                        neg_docs,
-                                        neg_docs_mask])
+                                        pos_docs_mask])
 
     
     def __len__(self):
@@ -255,9 +246,7 @@ class T5RewriterIRDataset_topiocqa(Dataset):
                              "bt_cur_utt_text": [],
                              "bt_oracle_utt_text": [],
                              "bt_pos_docs": [],
-                             "bt_pos_docs_mask": [],
-                             "bt_neg_docs": [],
-                             "bt_neg_docs_mask": [],
+                             "bt_pos_docs_mask": []
                             }
             for example in batch:
                 collated_dict["bt_sample_ids"].append(example[0])
@@ -268,8 +257,6 @@ class T5RewriterIRDataset_topiocqa(Dataset):
                 collated_dict["bt_oracle_utt_text"].append(example[5])
                 collated_dict["bt_pos_docs"].append(example[6])
                 collated_dict["bt_pos_docs_mask"].append(example[7])
-                collated_dict["bt_neg_docs"].append(example[8])
-                collated_dict["bt_neg_docs_mask"].append(example[9])
 
             not_need_to_tensor_keys = set(["bt_sample_ids", "bt_cur_utt_text", "bt_oracle_utt_text"])
             if args.collate_fn_type == "flat_concat_for_test":
@@ -344,13 +331,7 @@ class T5RewriterDataset_topiocqa(Dataset):
                 labels = torch.tensor(labels)
                 labels[labels == tokenizer.pad_token_id] = -100
                 labels = labels.tolist()
-                '''
-                for idx in range(len(pos_docs_text)):
-                    pos_docs = []
-                    neg_docs = []
-                    pos_docs.extend(tokenizer.encode(pos_docs_text[idx], add_special_tokens=True, max_length = args.max_doc_length))
-                    neg_docs.extend(tokenizer.encode(random_neg_docs_text[0], add_special_tokens=True, max_length = args.max_doc_length))
-                '''
+
                 self.examples.append([record['id'], 
                                 flat_concat,
                                 flat_concat_mask,
@@ -360,7 +341,6 @@ class T5RewriterDataset_topiocqa(Dataset):
             else:
                 labels = []
                 pos_docs = []
-                neg_docs = []
                 self.examples.append([record['id'], 
                                         flat_concat,
                                         flat_concat_mask,
