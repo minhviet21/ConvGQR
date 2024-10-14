@@ -154,6 +154,13 @@ def train(args, log_writer):
                                 decode_loss.item(),
                                 loss.item()))
                 
+                print(("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
+                                epoch + 1,
+                                global_step,
+                                ranking_loss.item(),
+                                decode_loss.item(),
+                                loss.item())))
+                
     logger.info("Training finish!") 
     print("Finish")
 
