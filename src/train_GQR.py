@@ -35,7 +35,7 @@ from data_structure import T5RewriterIRDataset_topiocqa
 #os.environ["CUDA_VISIBLE_DEVICES"]="1"
 
 def save_model(args, model, query_tokenizer, save_model_order, epoch, step, loss):
-    output_dir = oj(args.model_output_path, '{}-{}-best-model'.format("KD-ANCE-prefix", args.decode_type))
+    output_dir = oj(args.model_output_path, '{}-best-model'.format(args.decode_type))
     check_dir_exist_or_build([output_dir])
     model_to_save = model.module if hasattr(model, 'module') else model
     #model_to_save.t5.save_pretrained(output_dir)
@@ -81,6 +81,7 @@ def train(args, log_writer):
     save_model_order = 0
 
     # begin to train
+    print("Start")
     logger.info("Start training...")
     logger.info("Total training epochs = {}".format(args.num_train_epochs))
     logger.info("Total training steps = {}".format(total_training_steps))
@@ -131,13 +132,12 @@ def train(args, log_writer):
                                 ranking_loss.item(),
                                 decode_loss.item(),
                                 loss.item()))
-
-                print("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
+                print(("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
                                 epoch + 1,
                                 global_step,
                                 ranking_loss.item(),
                                 decode_loss.item(),
-                                loss.item()))
+                                loss.item())))
 
             #log_writer.add_scalar("train_ranking_loss, decode_loss, total_loss", ranking_loss, decode_loss, loss, global_step)
             
@@ -154,9 +154,8 @@ def train(args, log_writer):
                                 decode_loss.item(),
                                 loss.item()))
                 
-    logger.info("Training finish!")          
-         
-
+    logger.info("Training finish!") 
+    print("Finish")
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -206,4 +205,3 @@ if __name__ == '__main__':
     log_writer = SummaryWriter(log_dir = args.log_dir_path)
     train(args, log_writer)
     log_writer.close()
-
