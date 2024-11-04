@@ -140,6 +140,37 @@ def train(args, log_writer):
                                 loss.item())))
 
             #log_writer.add_scalar("train_ranking_loss, decode_loss, total_loss", ranking_loss, decode_loss, loss, global_step)
+
+        query_encoder.eval()
+        passage_encoder.eval()
+        global_loss = []
+        for batch in tqdm(val_loader,  desc="Step", disable=args.disable_tqdm):
+            query_encoder.zero_grad()
+
+            bt_conv_query = batch['bt_input_ids'].to(args.device) # B * len
+            bt_conv_query_mask = batch['bt_attention_mask'].to(args.device)
+            bt_pos_docs = batch['bt_pos_docs'].to(args.device) # B * len one pos
+            bt_pos_docs_mask = batch['bt_pos_docs_mask'].to(args.device)
+            bt_oracle_query = batch['bt_labels'].to(args.device)
+            
+            output = query_encoder(input_ids=bt_conv_query, 
+                         attention_mask=bt_conv_query_mask, 
+                         labels=bt_oracle_query)
+            decode_loss = output.loss  # B * dim
+            conv_query_embs = output.encoder_last_hidden_state[:, 0]
+
+            with torch.no_grad():
+                # freeze passage encoder's parameters
+                pos_doc_embs = passage_encoder(bt_pos_docs, bt_pos_docs_mask).detach()  # B * dim
+
+            ranking_loss = cal_kd_loss(conv_query_embs, pos_doc_embs)
+            loss = decode_loss + args.alpha * ranking_loss
+            global_loss.append(loss.item())
+        val_loss = sum(global_loss) / len(global_loss)
+        print("Epoch = {}, Valid loss = {}".format(
+                                epoch + 1,
+                                val_loss))
+        print("---------------------")
             
 
             global_step += 1    # avoid saving the model of the first step.
