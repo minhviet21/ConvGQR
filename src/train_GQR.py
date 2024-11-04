@@ -69,6 +69,13 @@ def train(args, log_writer):
                                 shuffle=True, 
                                 collate_fn=train_dataset.get_collate_fn(args))
 
+    val_dataset = T5RewriterIRDataset_topiocqa(args, query_tokenizer, args.val_file_path)
+    val_loader = DataLoader(val_dataset, 
+                                #sampler=train_sampler,
+                                batch_size = args.batch_size, 
+                                shuffle=True, 
+                                collate_fn=val_dataset.get_collate_fn(args))
+
     logger.info("train samples num = {}".format(len(train_dataset)))
     
     total_training_steps = args.num_train_epochs * (len(train_dataset) // args.batch_size + int(bool(len(train_dataset) % args.batch_size)))
@@ -140,6 +147,7 @@ def train(args, log_writer):
                                 loss.item())))
 
             #log_writer.add_scalar("train_ranking_loss, decode_loss, total_loss", ranking_loss, decode_loss, loss, global_step)
+            
 
             global_step += 1    # avoid saving the model of the first step.
             # save model finally
@@ -190,6 +198,8 @@ def train(args, log_writer):
                                 epoch + 1,
                                 val_loss))
         print("---------------------")
+        print("")
+            
                 
     logger.info("Training finish!") 
     print("Finish")
@@ -201,6 +211,7 @@ def get_args():
     parser.add_argument("--pretrained_passage_encoder", type=str, default="checkpoints/ad-hoc-ance-msmarco")
 
     parser.add_argument("--train_file_path", type=str, default="datasets/qrecc/new_preprocessed/train_with_doc.json")
+    parser.add_argument("--val_file_path", type=str, default="datasets/qrecc/new_preprocessed/train_with_doc.json")
     parser.add_argument("--log_dir_path", type=str, default="output/train_topiocqa/Log")
     parser.add_argument('--model_output_path', type=str, default="output/train_topiocqa/Checkpoint")
     parser.add_argument("--collate_fn_type", type=str, default="flat_concat_for_train")
