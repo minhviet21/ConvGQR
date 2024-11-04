@@ -141,6 +141,25 @@ def train(args, log_writer):
 
             #log_writer.add_scalar("train_ranking_loss, decode_loss, total_loss", ranking_loss, decode_loss, loss, global_step)
 
+            global_step += 1    # avoid saving the model of the first step.
+            # save model finally
+            if best_loss > loss:
+                save_model(args, query_encoder, query_tokenizer, save_model_order, epoch, global_step, loss.item())
+                best_loss = loss
+                logger.info("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
+                                epoch + 1,
+                                global_step,
+                                ranking_loss.item(),
+                                decode_loss.item(),
+                                loss.item()))
+                
+                print(("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
+                                epoch + 1,
+                                global_step,
+                                ranking_loss.item(),
+                                decode_loss.item(),
+                                loss.item())))
+
         query_encoder.eval()
         passage_encoder.eval()
         global_loss = []
@@ -171,26 +190,6 @@ def train(args, log_writer):
                                 epoch + 1,
                                 val_loss))
         print("---------------------")
-            
-
-            global_step += 1    # avoid saving the model of the first step.
-            # save model finally
-            if best_loss > loss:
-                save_model(args, query_encoder, query_tokenizer, save_model_order, epoch, global_step, loss.item())
-                best_loss = loss
-                logger.info("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
-                                epoch + 1,
-                                global_step,
-                                ranking_loss.item(),
-                                decode_loss.item(),
-                                loss.item()))
-                
-                print(("Epoch = {}, Global Step = {}, ranking loss = {}, decode loss = {}, total loss = {}".format(
-                                epoch + 1,
-                                global_step,
-                                ranking_loss.item(),
-                                decode_loss.item(),
-                                loss.item())))
                 
     logger.info("Training finish!") 
     print("Finish")
