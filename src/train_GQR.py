@@ -216,7 +216,7 @@ def get_args():
     parser.add_argument('--model_output_path', type=str, default="output/train_topiocqa/Checkpoint")
     parser.add_argument("--collate_fn_type", type=str, default="flat_concat_for_train")
     parser.add_argument("--decode_type", type=str, default="oracle")
-    parser.add_argument("--use_prefix", type=bool, default=True)
+    parser.add_argument("--use_prefix", type=bool, default=False)
 
     parser.add_argument("--per_gpu_train_batch_size", type=int,  default=8)
     parser.add_argument("--use_data_percent", type=float, default=1)
