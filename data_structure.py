@@ -55,7 +55,7 @@ class T5RewriterIRDataset_topiocqa(Dataset):
             #    continue
             
             if args.use_prefix:
-                cur_utt_text = "question: " + cur_utt_text
+                cur_utt_text = "Câu hỏi: " + cur_utt_text
                 first_context = True
                 
             cur_utt = tokenizer.encode(cur_utt_text, add_special_tokens = True, max_length = args.max_query_length)
@@ -66,7 +66,7 @@ class T5RewriterIRDataset_topiocqa(Dataset):
                 else:
                     max_length = args.max_query_length
                 if args.use_prefix and first_context:
-                    ctx_utts_text[j] = "context: " + ctx_utts_text[j]
+                    ctx_utts_text[j] = "Ngữ cảnh: " + ctx_utts_text[j]
                     first_context = False
                 utt = tokenizer.encode(ctx_utts_text[j], add_special_tokens=True, max_length=max_length, truncation=True) # not remove [CLS]
                 if len(flat_concat) + len(utt) > args.max_concat_length:
